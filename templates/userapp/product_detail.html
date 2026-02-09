@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} | Threaded{% endblock %}
+{% block content %}
+<section class="product-detail">
+    <div class="media" style="background-image:url('{{ product.image_url|default:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1000&q=80" }}');"></div>
+    <div class="info">
+        <p class="category">{{ product.category.name }}</p>
+        <h1>{{ product.name }}</h1>
+        <p class="price">${{ product.price }}</p>
+        <p>{{ product.description }}</p>
+        {% if product.available_sizes %}
+            <p class="sizes">Sizes: {% for size in product.available_sizes %}<span>{{ size }}</span>{% endfor %}</p>
+        {% endif %}
+        {% if product.colorway %}
+            <p class="muted">Colorway: {{ product.colorway }}</p>
+        {% endif %}
+        <form action="{% url 'userapp:add_to_cart' product.pk %}" method="post" class="detail-form">
+            {% csrf_token %}
+            <label>Quantity</label>
+            <input type="number" name="quantity" value="1" min="1">
+            <button class="btn primary" type="submit">Add to cart</button>
+        </form>
+    </div>
+</section>
+
+<section class="related">
+    <h3>Related pieces</h3>
+    <div class="product-grid">
+        {% for item in related_products %}
+            <article class="product-card compact">
+                <div class="product-image" style="background-image: url('{{ item.image_url|default:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80" }}');"></div>
+                <div class="product-body">
+                    <p class="category">{{ item.category.name }}</p>
+                    <h4>{{ item.name }}</h4>
+                    <p class="price">${{ item.price }}</p>
+                    <a class="btn ghost" href="{% url 'userapp:product_detail' item.slug %}">View</a>
+                </div>
+            </article>
+        {% empty %}
+            <p class="muted">More looks coming soon.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Order confirmed | Threaded{% endblock %}
+{% block content %}
+<section class="success">
+    <div class="card">
+        <p class="eyebrow">Order {{ order.id }}</p>
+        <h1>Thank you, {{ order.customer_name }}.</h1>
+        <p>We'll send shipping updates to {{ order.email }}.</p>
+        <ul class="order-list">
+            {% for item in order.items.all %}
+                <li>
+                    <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                    <strong>${{ item.line_total }}</strong>
+                </li>
+            {% endfor %}
+        </ul>
+        <p class="total">Total Paid: <strong>${{ order.total }}</strong></p>
+        <a class="btn primary" href="{% url 'userapp:home' %}">Continue shopping</a>
+    </div>
+</section>
+{% endblock %}

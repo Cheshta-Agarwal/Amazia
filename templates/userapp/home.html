@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}Threaded | Curated streetwear{% endblock %}
+{% block content %}
+<section class="hero">
+    <div>
+        <p class="eyebrow">NEW DROP</p>
+        <h1>Clothing made for bold, everyday movement.</h1>
+        <p class="lede">Layerable knits, architectural outerwear, and premium basics built in small batches.</p>
+        <a href="#catalog" class="btn primary">Browse collection</a>
+    </div>
+    <div class="hero-card">
+        <p>Featured looks</p>
+        {% for product in featured_products %}
+            <div class="hero-product">
+                <span>{{ product.name }}</span>
+                <strong>${{ product.price }}</strong>
+            </div>
+        {% empty %}
+            <p class="muted">Toggle a few items as featured inside the admin dashboard.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="filters" id="catalog">
+    <form method="get" class="filter-form">
+        <select name="category">
+            <option value="">All categories</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}" {% if category.id|stringformat:'s' == selected_category %}selected{% endif %}>{{ category.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="search" name="q" placeholder="Search by style" value="{{ search_query }}">
+        <button class="btn ghost" type="submit">Filter</button>
+    </form>
+</section>
+
+<section class="product-grid">
+    {% for product in products %}
+        <article class="product-card">
+            <div class="product-image" style="background-image: url('{{ product.image_url|default:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80" }}');"></div>
+            <div class="product-body">
+                <p class="category">{{ product.category.name }}</p>
+                <h3>{{ product.name }}</h3>
+                <p class="price">${{ product.price }}</p>
+                <p class="excerpt">{{ product.description|truncatewords:18 }}</p>
+                <div class="card-actions">
+                    <a class="btn ghost" href="{% url 'userapp:product_detail' product.slug %}">Details</a>
+                    <form action="{% url 'userapp:add_to_cart' product.pk %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="quantity" value="1">
+                        <button class="btn primary" type="submit">Add</button>
+                    </form>
+                </div>
+            </div>
+        </article>
+    {% empty %}
+        <p class="muted">No products match this filter yet.</p>
+    {% endfor %}
+</section>
+
+<section class="features">
+    <article>
+        <h4>Slow fashion</h4>
+        <p>Limited capsules stitched ethically. No landfill drops.</p>
+    </article>
+    <article>
+        <h4>Premium fabrics</h4>
+        <p>Organic cotton, merino blends, recycled nylon trims.</p>
+    </article>
+    <article>
+        <h4>Fast delivery</h4>
+        <p>Tracked shipping with doorstep pickups worldwide.</p>
+    </article>
+</section>
+{% endblock %}

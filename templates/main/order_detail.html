@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Order #{{ order.id }} | Threaded{% endblock %}
+{% block content %}
+<section class="card">
+    <h1>Order #{{ order.id }}</h1>
+    <div class="order-meta">
+        <p><strong>Customer:</strong> {{ order.customer_name }}</p>
+        <p><strong>Email:</strong> {{ order.email }}</p>
+        <p><strong>Phone:</strong> {{ order.phone }}</p>
+        <p><strong>Address:</strong> {{ order.address }}, {{ order.city }}, {{ order.state }} {{ order.postal_code }}</p>
+    </div>
+    <h3>Items</h3>
+    <ul class="order-list">
+        {% for item in order.items.all %}
+            <li>
+                <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                <strong>${{ item.line_total }}</strong>
+            </li>
+        {% endfor %}
+    </ul>
+    <p>Subtotal <strong>${{ order.subtotal }}</strong></p>
+    <p>Tax <strong>${{ order.tax }}</strong></p>
+    <p class="total">Total <strong>${{ order.total }}</strong></p>
+
+    <form method="post" class="order-form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <label>Status {{ form.status }}</label>
+        <label>Notes {{ form.notes }}</label>
+        <button class="btn primary" type="submit">Update order</button>
+    </form>
+</section>
+{% endblock %}

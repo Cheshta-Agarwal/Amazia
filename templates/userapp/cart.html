@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Your bag | Threaded{% endblock %}
+{% block content %}
+<section class="cart">
+    <h1>Shopping bag</h1>
+    {% if items %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>
+                            <strong>{{ item.product.name }}</strong>
+                            <p class="muted">{{ item.product.category.name }}</p>
+                        </td>
+                        <td>
+                            <form action="{% url 'userapp:update_cart' item.product.pk %}" method="post" class="inline-form">
+                                {% csrf_token %}
+                                <input type="number" name="quantity" min="0" value="{{ item.quantity }}">
+                                <button class="btn ghost" type="submit">Update</button>
+                            </form>
+                        </td>
+                        <td>${{ item.line_total }}</td>
+                        <td>
+                            <form action="{% url 'userapp:remove_from_cart' item.product.pk %}" method="post">
+                                {% csrf_token %}
+                                <button class="btn text" type="submit">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="cart-summary">
+            <p>Subtotal <strong>${{ totals.subtotal }}</strong></p>
+            <p>Tax <strong>${{ totals.tax }}</strong></p>
+            <p class="total">Total <strong>${{ totals.total }}</strong></p>
+            <div class="cart-actions">
+                <form action="{% url 'userapp:clear_cart' %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn ghost" type="submit">Clear cart</button>
+                </form>
+                <a class="btn primary" href="{% url 'userapp:checkout' %}">Checkout</a>
+            </div>
+        </div>
+    {% else %}
+        <p class="muted">Your cart is empty. Discover something fresh in the shop.</p>
+        <a class="btn primary" href="{% url 'userapp:home' %}">Back to shop</a>
+    {% endif %}
+</section>
+{% endblock %}

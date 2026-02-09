@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Welcome | Threaded{% endblock %}
+{% block content %}
+<section class="card">
+	<h1>Welcome to Threaded</h1>
+	<p>This project ships with a customer-facing shop and a lightweight admin panel.</p>
+	<p>
+		<a class="btn primary" href="{% url 'userapp:home' %}">Open the shop</a>
+		<a class="btn ghost" href="{% url 'main:dashboard' %}">Admin dashboard</a>
+	</p>
+</section>
+{% endblock %}

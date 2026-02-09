@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block title %}Admin dashboard | Threaded{% endblock %}
+{% block content %}
+<section class="admin-hero">
+    <div>
+        <h1>Store pulse</h1>
+        <p>Track revenue, keep stock healthy, and fulfil orders without leaving this panel.</p>
+        <div class="admin-actions">
+            <a class="btn primary" href="{% url 'main:product_create' %}">Add product</a>
+            <a class="btn ghost" href="{% url 'main:order_list' %}">Orders</a>
+        </div>
+    </div>
+</section>
+
+<section class="metrics">
+    <article>
+        <p class="eyebrow">Revenue</p>
+        <h3>${{ total_revenue|default:"0.00" }}</h3>
+    </article>
+    <article>
+        <p class="eyebrow">Pending orders</p>
+        <h3>{{ pending_orders }}</h3>
+    </article>
+    <article>
+        <p class="eyebrow">Low stock alerts</p>
+        <h3>{{ low_stock_products|length }}</h3>
+    </article>
+</section>
+
+<section class="grid two">
+    <div class="card">
+        <h3>Featured products</h3>
+        <ul>
+            {% for product in featured_products %}
+                <li>
+                    <div>
+                        <strong>{{ product.name }}</strong>
+                        <p class="muted">{{ product.category.name }} · Stock {{ product.stock }}</p>
+                    </div>
+                    <a href="{% url 'main:product_edit' product.pk %}">Edit</a>
+                </li>
+            {% empty %}
+                <p class="muted">Mark a few pieces as featured to highlight them here.</p>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="card">
+        <h3>Low stock</h3>
+        <ul>
+            {% for product in low_stock_products %}
+                <li>
+                    <div>
+                        <strong>{{ product.name }}</strong>
+                        <p class="muted">{{ product.stock }} units left</p>
+                    </div>
+                    <a href="{% url 'main:product_edit' product.pk %}">Restock</a>
+                </li>
+            {% empty %}
+                <p class="muted">All products are well stocked.</p>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+
+<section class="card">
+    <h3>Latest orders</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Customer</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in latest_orders %}
+                <tr>
+                    <td>#{{ order.id }}</td>
+                    <td>{{ order.customer_name }}</td>
+                    <td>{{ order.get_status_display }}</td>
+                    <td>${{ order.total }}</td>
+                    <td><a href="{% url 'main:order_detail' order.pk %}">Open</a></td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5" class="muted">No orders yet. Share your shop link!</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

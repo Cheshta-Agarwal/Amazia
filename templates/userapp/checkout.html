@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Checkout | Threaded{% endblock %}
+{% block content %}
+<section class="checkout">
+    <h1>Secure checkout</h1>
+    <div class="checkout-grid">
+        <form method="post" class="card">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-grid">
+                <label>Full name
+                    {{ form.customer_name }}
+                    {{ form.customer_name.errors }}
+                </label>
+                <label>Email
+                    {{ form.email }}
+                    {{ form.email.errors }}
+                </label>
+                <label>Phone
+                    {{ form.phone }}
+                    {{ form.phone.errors }}
+                </label>
+                <label>Address
+                    {{ form.address }}
+                    {{ form.address.errors }}
+                </label>
+                <label>City
+                    {{ form.city }}
+                    {{ form.city.errors }}
+                </label>
+                <label>State
+                    {{ form.state }}
+                    {{ form.state.errors }}
+                </label>
+                <label>Postal code
+                    {{ form.postal_code }}
+                    {{ form.postal_code.errors }}
+                </label>
+                <label>Notes
+                    {{ form.notes }}
+                    {{ form.notes.errors }}
+                </label>
+            </div>
+            <button class="btn primary" type="submit">Place order</button>
+        </form>
+        <aside class="card summary">
+            <h3>Order summary</h3>
+            <ul>
+                {% for item in items %}
+                    <li>
+                        <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                        <strong>${{ item.line_total }}</strong>
+                    </li>
+                {% endfor %}
+            </ul>
+            <p>Subtotal <strong>${{ totals.subtotal }}</strong></p>
+            <p>Tax <strong>${{ totals.tax }}</strong></p>
+            <p class="total">Total <strong>${{ totals.total }}</strong></p>
+        </aside>
+    </div>
+</section>
+{% endblock %}
